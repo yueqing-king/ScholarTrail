@@ -1,0 +1,69 @@
+{
+  "manifest_version": 3,
+  "name": "ScholarTrail — 文献研究记忆",
+  "version": "1.4",
+  "description": "记住你在 Google Scholar 点过、存过、记过和排除过的论文。项目独立，数据保存在本地。",
+  "minimum_chrome_version": "116",
+  "permissions": [
+    "storage",
+    "alarms",
+    "unlimitedStorage"
+  ],
+  "optional_host_permissions": [
+    "https://api.zotero.org/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "ScholarTrail · 文献研究记忆",
+    "default_icon": {
+      "16": "icons/16.png",
+      "32": "icons/32.png",
+      "128": "icons/128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/16.png",
+    "32": "icons/32.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "options_page": "app.html#settings",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://scholar.google.com/*",
+        "https://scholar.google.com.hk/*",
+        "https://scholar.google.co.uk/*",
+        "https://scholar.google.de/*",
+        "https://scholar.google.fr/*",
+        "https://scholar.google.ca/*",
+        "https://scholar.google.com.au/*",
+        "https://scholar.google.co.jp/*",
+        "https://scholar.google.co.in/*",
+        "https://scholar.google.com.br/*",
+        "https://scholar.google.es/*",
+        "https://scholar.google.it/*",
+        "https://scholar.google.nl/*",
+        "https://scholar.google.com.sg/*",
+        "https://scholar.google.com.tw/*",
+        "https://scholar.google.co.kr/*"
+      ],
+      "js": [
+        "lib/tags-ui.js",
+        "content.js"
+      ],
+      "css": [
+        "content.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; base-uri 'none'"
+  },
+  "version_name": "V1.4"
+}

@@ -1,0 +1,10 @@
+.DS_Store
+._*
+node_modules/
+test-results/
+*.zip
+*.crx
+*.pem
+.env
+.env.*
+!.env.example

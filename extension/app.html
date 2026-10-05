@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ScholarTrail · 让研究留下记忆</title><link rel="icon" href="icons/32.png"><link rel="stylesheet" href="ui.css"></head>
+<body>
+  <aside class="sidebar">
+    <a href="#" class="brand"><img src="icons/48.png" alt="">ScholarTrail<span class="version">V1.4</span></a>
+    <div class="sidebar-label">我的研究 <button id="new-project" class="icon-button" title="创建项目" aria-label="创建项目">+</button></div>
+    <nav id="projects" aria-label="研究项目"></nav>
+    <div class="sidebar-bottom"><a href="#archive" class="nav-link" id="archive-nav">▱ <span>已归档项目</span><span id="archive-count"></span></a><a href="#settings" class="nav-link" id="settings-nav">⚙ <span>设置与连接</span></a><div class="local-caption"><i></i> 数据保存在当前浏览器</div></div>
+  </aside>
+  <div class="workspace">
+    <header class="topbar"><div id="breadcrumb">工作区 <span>/</span> 研究项目</div><a class="button small" href="https://scholar.google.com/" target="_blank" rel="noopener noreferrer">打开 Google Scholar <span>↗</span></a></header>
+    <main id="main" tabindex="-1"></main>
+    <footer class="page-footer"><span>照常检索，让 ScholarTrail 记住研究的足迹。</span><span>本地优先 · V1.4</span></footer>
+  </div>
+  <div id="drawer-backdrop" class="drawer-backdrop" hidden></div><aside id="drawer" class="drawer" role="dialog" aria-modal="true" aria-label="论文详情" hidden></aside>
+  <dialog id="project-dialog"><form id="project-form"><div class="dialog-top"><span class="eyebrow" id="dialog-eyebrow">我的研究</span><button type="button" class="icon-button" id="close-dialog" aria-label="关闭对话框">×</button></div><h2 id="dialog-title">创建研究项目</h2><p id="dialog-description" class="muted">给项目起个名字。每次点击、笔记和判断都会保留在这个项目中。</p><label id="name-label">项目名称<input id="project-name" maxlength="100" autocomplete="off" placeholder="例如：社会信用体系" required></label><p id="dialog-error" class="form-error" role="alert"></p><div class="dialog-actions"><button type="button" id="cancel-dialog" class="button">取消</button><button id="submit-project" class="button primary">创建项目</button></div></form></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <script src="lib/tags-ui.js"></script>
+  <script type="module" src="app.js"></script>
+</body></html>
