@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "ScholarTrail — 文献研究记忆",
-  "version": "1.4",
+  "version": "1.4.0",
   "description": "记住你在 Google Scholar 点过、存过、记过和排除过的论文。项目独立，数据保存在本地。",
   "minimum_chrome_version": "116",
   "permissions": [

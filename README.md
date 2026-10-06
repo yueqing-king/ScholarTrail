@@ -8,7 +8,7 @@
 
 **[点击下载 V1.4 中文版安装包](https://github.com/yueqing-king/ScholarTrail/raw/refs/heads/main/downloads/ScholarTrail-v1.4.0-zh-CN.zip)**
 
-下载 `ScholarTrail-v1.4.0-zh-CN.zip`，解压后按下面的步骤安装。安装包内包含 `extension/` 和安装说明，无需构建；也可以在本仓库的 **Releases** 中查找正式发布的版本。
+下载 `ScholarTrail-v1.4.0-zh-CN.zip`，解压后按下面的步骤安装。安装包内包含 `extension/` 和安装说明，无需构建。
 
 也可以点击仓库的 **Code → Download ZIP** 下载完整源码；解压后加载其中的 `extension/` 文件夹即可。
 
@@ -22,7 +22,7 @@
 2. Chrome 地址栏输入 `chrome://extensions`；Edge 输入 `edge://extensions`。
 3. 打开右上角的「开发者模式」。
 4. 点击「加载已解压的扩展程序」，选择解压目录中的 **`extension` 文件夹**，也就是包含 `manifest.json` 的那一层。不要选择整个压缩包或上一级文件夹。
-5. 新开的 ScholarTrail 页面中，创建项目，例如 `社会信用体系`。
+5. 新开的 ScholarTrail 页面中，创建自己的研究项目，或选择「已有备份？导入研究数据」恢复之前的记录。
 6. 打开 Google Scholar，**刷新已打开的 Scholar 页面**。右下角显示当前项目后，正常点击论文标题即可。
 
 不需要安装 Node、Python 或任何开发依赖。不要移动已加载的 `extension` 文件夹；浏览器会持续从这里读取插件。
@@ -43,7 +43,7 @@
 | 项目列表 | 搜索标题、作者、笔记和标签；组合筛选点击、笔记、不相关、Zotero 状态和具体标签 |
 | 发现历史 | 点击 `历史` 查看每次查询词、时间，以及原始 Scholar 搜索页 |
 | Zotero | 连接个人在线文献库、检测已收藏条目、打开网页/桌面条目、保存基础文献记录 |
-| 数据导出 | 设置中导出 JSON；不含 Zotero 密钥。本版不提供导入功能 |
+| 备份与恢复 | 导出和导入 JSON，恢复项目、论文、笔记、标签、判断与点击历史；支持旧版备份，不含 Zotero 密钥 |
 
 ## 连接 Zotero
 
@@ -61,15 +61,31 @@
 
 保存条目：项目页 → 论文详情 → **保存文献到 Zotero**。会保存一条基础 journal article 记录，使用页面上能提取的标题、作者、年份、URL 和 DOI。**Google Scholar 元数据可能不完整，保存后请在 Zotero 校对文献类型和作者信息。此功能不下载 PDF，也不替代 Zotero Connector 的完整抓取能力。**
 
-## 一次完整体验
+## 从检索到整理
 
-1. 创建 `社会信用体系` 项目。
-2. 在 Scholar 搜索，点击一篇论文，再返回结果页。
-3. 看到 `✓ 之前点过`；点 `+ 添加笔记` 输入一条想法。
-4. 点 `× 不相关`，该结果变淡，但依然保留标题和笔记。
-5. 换查询词或刷新，再次遇到这篇论文时状态仍在。
-6. 点 `撤销`，排除状态取消，笔记和历史仍然保留。
-7. 创建并切换到 `数字治理`；刚才的项目笔记和排除状态不会继承。
+1. 为当前研究创建一个项目，再打开 Google Scholar，按自己的关键词检索。
+2. 点开感兴趣的论文，返回结果页时会看到 `✓ 之前点过`。
+3. 点 `+ 添加笔记` 记下想法，用彩色标签区分「待精读」「可引用」等状态。
+4. 对暂时用不到的结果点 `× 不相关`；需要重新考虑时点 `撤销`，笔记和点击历史都会保留。
+5. 换查询词或刷新，再次遇到同一篇论文时，继续之前的判断和笔记。
+6. 点击插件图标进入项目页，搜索或筛选已记录的论文，查看每次发现它的时间和检索词。
+7. 开始另一个主题时创建并切换项目。同一篇论文在不同项目中可以有不同的笔记、标签和判断。
+8. 整理告一段落后，进入「设置与连接」导出研究数据；换浏览器或重新安装时导入备份，接着研究。
+
+## 备份、恢复与迁移
+
+**导出：**进入「设置与连接」→「导出研究数据」，保存得到的 JSON 文件。
+
+**导入：**在首次安装页面选择「已有备份？导入研究数据」，或进入「设置与连接」→「导入研究数据」。选择 ScholarTrail 导出的 JSON 文件，核对预览中的项目、论文记录、笔记、标签和点击历史数量，再点击「确认导入」。取消预览不会修改任何数据。
+
+- 支持此前版本导出的 ScholarTrail JSON 备份，文件最大 20 MB。
+- 项目名称、归档状态、论文、笔记、彩色标签、「不相关」判断及检索历史会恢复。在空白安装中也会恢复原来的当前项目。
+- 原有内容保留；同名或内容不同的项目另建副本，例如「文献综述（导入）」。相同备份中的已恢复项目会跳过，避免重复添加。
+- 如果预览期间发生新的编辑，插件会刷新预览，要求再次确认，保留刚刚新增的内容。
+- 每次实际导入前会自动保留一份当前研究数据，可在设置中点击「下载最近一次导入前的备份」。这里只保留最近一次，重要备份请另存到自己的文件夹。
+- 备份不包含 Zotero API 密钥、连接设置或在线库缓存。迁移到新的浏览器后，如需 Zotero 功能，请重新连接。
+
+这是通过文件手动迁移；数据不会自动在设备间同步。JSON 中包含自己的检索词和笔记，请保存在合适的位置。
 
 ## 当前边界
 
@@ -79,10 +95,10 @@
 - DOI、可靠 Scholar / arXiv ID 优先；否则需要标准化标题、作者首字母/姓氏与年份一致。标题相同但信息不足、标识冲突或存在多个同分候选时，宁可不继承旧判断。
 - 不支持 Zotero 群组库、笔记/标签/集合双向同步。检测的是个人**在线库**。
 - 大型文献库首次连接会逐页读取；分页过程中版本变化会报错并保留原缓存，可稍后重试。MVP 上限为 100,000 条顶层条目。
-- 数据限于当前浏览器配置文件，不跨设备同步。卸载扩展或清除扩展数据会删除本地记录，请先导出。
+- 数据保存在当前浏览器配置文件，可通过导出和导入手动迁移，不跨设备自动同步。卸载扩展或清除扩展数据会删除本地记录，请先导出。
 - Scholar 页面结构变更可能影响提取；更新扩展后点击浏览器扩展页的刷新按钮，再刷新 Scholar 标签页。
 - 已做核心逻辑和真实 Chromium 扩展流程测试；Zotero 写入测试使用模拟 API，交付时没有访问你的实际文献库。首次连接后建议用一条非关键记录完成实际验收。
-- 真实 Google Scholar 线上检查遇到 HTTP 429 限流；浏览器流程已使用代表性 Scholar DOM 验证，线上页面兼容性还需要你正常访问时确认。完整结果见 `TESTING.md`。
+- 真实 Google Scholar 线上检查遇到 HTTP 429 限流；浏览器流程已使用代表性 Scholar DOM 验证，线上页面兼容性还需要你正常访问时确认。测试脚本位于 `tests/`。
 
 ## 隐私与权限
 
@@ -109,13 +125,17 @@ extension/
   lib/zotero.js     Zotero API 客户端
   lib/tags-ui.js    彩色标签编辑与展示
   lib/filters.js    项目列表组合筛选
+  lib/backup.js      备份校验、恢复计划与冲突保护
+  lib/backup-ui.js   文件选择、导入预览与确认
 tests/
   core.test.mjs     项目、点击、识别、笔记、隔离、撤销
   zotero.test.mjs   分页、缓存、限流、保存确认
+  backup*.test.mjs  备份恢复与后台事务测试
   e2e.mjs          真实 Chromium 中的扩展验收
+  backup-e2e.mjs   真实浏览器中的导入、恢复和迁移验收
   scholar-fixture.html   代表性 Scholar DOM 测试页
 ```
 
-开发者可使用 Node 20+ 运行 `npm test`。浏览器验收需要 Playwright 和它的 Chromium：`node tests/e2e.mjs`。默认写入 `test-results/`，不会使用日常浏览器配置文件；可通过 `SCHOLARTRAIL_TEST_DIR` 改写输出目录。测试时会清空**该测试配置文件**中的扩展存储，请勿指向个人浏览器目录。
+开发者可使用 Node 20+ 运行 `npm test`。浏览器验收需要 Playwright 和它的 Chromium：`node tests/e2e.mjs` 和 `node tests/backup-e2e.mjs`。默认写入 `test-results/`，不会使用日常浏览器配置文件；可通过 `SCHOLARTRAIL_TEST_DIR` 改写输出目录。测试时会清空**该测试配置文件**中的扩展存储，请勿指向个人浏览器目录。
 
 实现参考：[Chrome Content Scripts](https://developer.chrome.com/docs/extensions/develop/concepts/content-scripts)、[Chrome Storage](https://developer.chrome.com/docs/extensions/reference/api/storage)、[Zotero Web API](https://www.zotero.org/support/dev/web_api/v3/basics)、[Zotero Write Requests](https://www.zotero.org/support/dev/web_api/v3/write_requests)。

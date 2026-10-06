@@ -13,8 +13,16 @@
     <footer class="page-footer"><span>照常检索，让 ScholarTrail 记住研究的足迹。</span><span>本地优先 · V1.4</span></footer>
   </div>
   <div id="drawer-backdrop" class="drawer-backdrop" hidden></div><aside id="drawer" class="drawer" role="dialog" aria-modal="true" aria-label="论文详情" hidden></aside>
-  <dialog id="project-dialog"><form id="project-form"><div class="dialog-top"><span class="eyebrow" id="dialog-eyebrow">我的研究</span><button type="button" class="icon-button" id="close-dialog" aria-label="关闭对话框">×</button></div><h2 id="dialog-title">创建研究项目</h2><p id="dialog-description" class="muted">给项目起个名字。每次点击、笔记和判断都会保留在这个项目中。</p><label id="name-label">项目名称<input id="project-name" maxlength="100" autocomplete="off" placeholder="例如：社会信用体系" required></label><p id="dialog-error" class="form-error" role="alert"></p><div class="dialog-actions"><button type="button" id="cancel-dialog" class="button">取消</button><button id="submit-project" class="button primary">创建项目</button></div></form></dialog>
+  <dialog id="project-dialog"><form id="project-form"><div class="dialog-top"><span class="eyebrow" id="dialog-eyebrow">我的研究</span><button type="button" class="icon-button" id="close-dialog" aria-label="关闭对话框">×</button></div><h2 id="dialog-title">创建研究项目</h2><p id="dialog-description" class="muted">给项目起个名字。每次点击、笔记和判断都会保留在这个项目中。</p><label id="name-label">项目名称<input id="project-name" maxlength="100" autocomplete="off" placeholder="例如：文献综述" required></label><p id="dialog-error" class="form-error" role="alert"></p><div class="dialog-actions"><button type="button" id="cancel-dialog" class="button">取消</button><button id="submit-project" class="button primary">创建项目</button></div></form></dialog>
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <input type="file" id="backup-file" accept=".json,application/json" hidden aria-label="选择 ScholarTrail 备份">
+  <dialog id="import-dialog" aria-labelledby="import-title" aria-describedby="import-summary">
+    <h2 id="import-title">导入研究数据</h2><p id="import-filename" class="muted"></p>
+    <p id="import-summary" role="status"></p><p id="import-details" class="muted"></p>
+    <p class="help">原有项目和笔记会保留。同名或内容有变化的项目会另建副本；已导入的相同备份会跳过。导入前会自动备份当前数据，可在设置中下载。</p>
+    <p id="import-error" class="form-error" role="alert"></p>
+    <div class="dialog-actions"><button type="button" id="cancel-import" class="button">取消</button><button type="button" id="confirm-import" class="button primary">确认导入</button></div>
+  </dialog>
   <script src="lib/tags-ui.js"></script>
   <script type="module" src="app.js"></script>
 </body></html>

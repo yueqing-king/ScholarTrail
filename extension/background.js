@@ -1,5 +1,6 @@
 import { blankDB, createProject, changeProject, recordClick, editRecord, setPaperTag, projectTags, paperData, findMatch, matchScore, clean, now, errorMessage, zoteroWebURL } from './lib/core.js';
 import { ZoteroClient, itemKey } from './lib/zotero.js';
+import { createBackup, planImport, digest } from './lib/backup.js';
 
 const ready = chrome.storage.local.setAccessLevel({ accessLevel: 'TRUSTED_CONTEXTS' });
 let queue = Promise.resolve();
@@ -63,12 +64,26 @@ async function handle(m, trusted) {
   if (!trusted) throw new Error('请在 ScholarTrail 内执行此操作。');
   if (m.type === 'GET_STATE') {
     const { db, settings, zotero } = await read();
-    return { ...db, encounters: undefined, zotero_status: summary(settings, zotero), zotero_links: Object.fromEntries(db.papers.map(p => [p.id, linkFor(p, zotero, settings)])) };
+    const { import_backup_at } = await chrome.storage.local.get('import_backup_at');
+    return { ...db, encounters: undefined, import_backup_available: !!import_backup_at, zotero_status: summary(settings, zotero), zotero_links: Object.fromEntries(db.papers.map(p => [p.id, linkFor(p, zotero, settings)])) };
   }
   if (m.type === 'GET_HISTORY') { const { db } = await read(); return db.encounters.filter(e => e.project_id === m.project_id && e.paper_id === m.paper_id).reverse(); }
   if (m.type === 'CREATE_PROJECT') return mutate(db => createProject(db, m.name));
   if (m.type === 'PROJECT_ACTION') return mutate(db => changeProject(db, m.action, m.project_id, m.name));
-  if (m.type === 'EXPORT') { const { db } = await read(); return { app: 'ScholarTrail', exported_at: now(), ...db }; }
+  if (m.type === 'EXPORT') { const { db } = await read(); return createBackup(db); }
+  if (m.type === 'IMPORT_PREVIEW') { const { db } = await read(); const plan = await planImport(db, m.text); return { ...plan.stats, revision: plan.revision }; }
+  if (m.type === 'IMPORT') return serial(async () => {
+    const { db } = await read();
+    if (!m.revision || await digest(db) !== m.revision) throw new Error('当前数据已更新，请重新预览后确认导入。');
+    const plan = await planImport(db, m.text);
+    if (plan.stats.projects || plan.stats.papers) await chrome.storage.local.set({ db: plan.db, import_backup: createBackup(db), import_backup_at: now() });
+    return plan.stats;
+  });
+  if (m.type === 'EXPORT_IMPORT_BACKUP') {
+    const { import_backup } = await chrome.storage.local.get('import_backup');
+    if (!import_backup) throw new Error('还没有导入前备份；首次导入时会自动保存。');
+    return import_backup;
+  }
   if (m.type === 'ZOTERO_CONNECT') {
     const user_id = clean(m.user_id, 30), api_key = clean(m.api_key, 100);
     if (!/^\d+$/.test(user_id) || !/^[A-Za-z0-9]{16,100}$/.test(api_key)) throw new Error('请填写 Zotero 数字用户 ID 和有效的 API 密钥。');

@@ -22,7 +22,7 @@ try {
   app.on('pageerror',e=>errors.push(e.message));
   const api=async(type,fields={})=>{const r=await app.evaluate(m=>chrome.runtime.sendMessage(m),{type,...fields});assert.equal(r.ok,true,r.error);return r.data;};
   await app.goto(`chrome-extension://${id}/app.html`);
-  await app.getByRole('textbox',{name:'项目名称',exact:true}).fill('社会信用体系');
+  await app.getByRole('textbox',{name:'项目名称',exact:true}).fill('文献综述');
   await app.locator('#welcome-form button').click();
   await app.waitForSelector('#paper-list');
   let state=await api('GET_STATE'), projectA=state.active_project_id;
@@ -31,17 +31,17 @@ try {
   await context.route('https://scholar.google.com/**',r=>r.fulfill({contentType:'text/html',body:fixture}));
   await context.route('https://example.org/**',r=>r.fulfill({contentType:'text/html',body:'<h1>Research paper destination</h1>'}));
   const scholar=await context.newPage();
-  await scholar.goto('https://scholar.google.com/scholar?q=social+credit+system+China');
-  await scholar.getByRole('button',{name:/ScholarTrail · 社会信用体系/}).waitFor();
+  await scholar.goto('https://scholar.google.com/scholar?q=literature+review+methods');
+  await scholar.getByRole('button',{name:/ScholarTrail · 文献综述/}).waitFor();
   assert.equal((await api('GET_STATE')).papers.length,0);assert.equal(await scholar.getByText('✓ 之前点过',{exact:true}).count(),0);pass('Simply appearing in Scholar records no seen/clicked history');
   await scholar.locator('.gs_rt a').first().click();
-  await scholar.waitForURL('https://example.org/creemers');
+  await scholar.waitForURL('https://example.org/review');
   await scholar.goBack();
   await scholar.getByText('✓ 之前点过',{exact:true}).waitFor();
   state=await api('GET_STATE');assert.equal(state.papers.length,1);const first=state.papers[0];
-  const history=await api('GET_HISTORY',{project_id:projectA,paper_id:first.id});assert.equal(history[0].search_query,'social credit system China');pass('Native same-tab navigation saves click + query + time before leaving');
+  const history=await api('GET_HISTORY',{project_id:projectA,paper_id:first.id});assert.equal(history[0].search_query,'literature review methods');pass('Native same-tab navigation saves click + query + time before leaving');
   await scholar.getByRole('button',{name:'+ 添加笔记',exact:true}).click();
-  await scholar.getByRole('textbox',{name:'社会信用体系的笔记'}).fill('适合用于制度背景部分。之后再读其中关于治理机制的讨论。');
+  await scholar.getByRole('textbox',{name:'文献综述的笔记'}).fill('可用于文献综述的方法部分，之后再比较研究设计。');
   await scholar.getByRole('button',{name:'保存笔记',exact:true}).click();
   await scholar.getByRole('button',{name:'▤ 笔记',exact:true}).waitFor();
   await scholar.getByRole('button',{name:'× 不相关',exact:true}).click();
@@ -49,20 +49,20 @@ try {
   await scholar.reload();await scholar.locator('.scholartrail-excluded').waitFor();
   await scholar.getByRole('button',{name:'撤销',exact:true}).click();
   await scholar.waitForFunction(()=>!document.querySelector('.scholartrail-excluded'));
-  assert.match((await api('GET_STATE')).project_papers[0].note,/制度背景/);pass('Inline notes, exclusion, refresh recognition and Undo preserve history');
-  const projectB=await api('CREATE_PROJECT',{name:'数字治理'});
-  await scholar.getByRole('button',{name:/ScholarTrail · 数字治理/}).waitFor();
+  assert.match((await api('GET_STATE')).project_papers[0].note,/方法部分/);pass('Inline notes, exclusion, refresh recognition and Undo preserve history');
+  const projectB=await api('CREATE_PROJECT',{name:'研究专题'});
+  await scholar.getByRole('button',{name:/ScholarTrail · 研究专题/}).waitFor();
   assert.equal(await scholar.getByText('✓ 之前点过',{exact:true}).count(),0);pass('Project switching clears inherited click, note and exclusion states');
   await api('PROJECT_ACTION',{action:'switch',project_id:projectA});
-  await scholar.getByRole('button',{name:/ScholarTrail · 社会信用体系/}).waitFor();
+  await scholar.getByRole('button',{name:/ScholarTrail · 文献综述/}).waitFor();
   for(const nth of [1,2]) { const popup=context.waitForEvent('page');await scholar.locator('.gs_rt a').nth(nth).click();const opened=await popup;await opened.close(); }
   await app.reload();await app.waitForSelector('.paper-card');
   await app.waitForFunction(()=>document.querySelectorAll('.paper-card').length===3);
-  state=await api('GET_STATE');const finance=state.papers.find(p=>p.title.includes('financial'));
+  state=await api('GET_STATE');const finance=state.papers.find(p=>p.title.includes('evaluation'));
   await app.locator(`[data-paper="${finance.id}"] [data-exclude]`).click();
   await app.locator(`[data-paper="${finance.id}"].excluded`).waitFor();
   await app.getByRole('button',{name:/有笔记/}).click();assert.equal(await app.locator('.paper-card').count(),1);
-  await app.getByRole('button',{name:/全部论文/}).click();await app.getByRole('searchbox',{name:'搜索论文'}).fill('financial');assert.equal(await app.locator('.paper-card').count(),1);
+  await app.getByRole('button',{name:/全部论文/}).click();await app.getByRole('searchbox',{name:'搜索论文'}).fill('evaluation');assert.equal(await app.locator('.paper-card').count(),1);
   await app.getByRole('searchbox',{name:'搜索论文'}).fill('');pass('Project list search and note/exclusion filters work');
   await app.locator(`[data-detail="${first.id}"]`).first().click();
   await app.getByRole('textbox',{name:'论文笔记',exact:true}).fill('<img src=x onerror=alert(1)> A note is text, not HTML.');
@@ -70,12 +70,12 @@ try {
   await app.getByText('已保存',{exact:true}).waitFor();
   assert.equal(await app.locator('#drawer img').count(),0);
   await app.getByRole('button',{name:'删除笔记',exact:true}).click();await app.getByText('笔记已删除',{exact:true}).waitFor();
-  await app.getByRole('textbox',{name:'论文笔记',exact:true}).fill('适合用于制度背景部分。之后再读其中关于治理机制的讨论。');await app.getByRole('button',{name:'保存笔记',exact:true}).click();await app.getByText('已保存',{exact:true}).waitFor();
+  await app.getByRole('textbox',{name:'论文笔记',exact:true}).fill('可用于文献综述的方法部分，之后再比较研究设计。');await app.getByRole('button',{name:'保存笔记',exact:true}).click();await app.getByText('已保存',{exact:true}).waitFor();
   await app.getByRole('button',{name:'关闭论文详情'}).click();pass('Detail note add/edit/delete works and arbitrary note HTML stays inert');
   // Exercise real background messages with a fake Zotero server. No personal account is used.
   await worker.evaluate(()=>{
     chrome.permissions.contains=async()=>true;
-    globalThis.__zItems=[{key:'ABCD2345',version:1,data:{itemType:'journalArticle',title:'China’s Social Credit System: An Evolving Practice of Control',creators:[{creatorType:'author',firstName:'Rogier',lastName:'Creemers'}],date:'2018'}}];
+    globalThis.__zItems=[{key:'ABCD2345',version:1,data:{itemType:'journalArticle',title:'A practical guide to literature review methods',creators:[{creatorType:'author',firstName:'Robin',lastName:'Taylor'}],date:'2018'}}];
     globalThis.fetch=async(url,options={})=>{
       const headers={'Last-Modified-Version':'5','Total-Results':String(globalThis.__zItems.length)};
       if(globalThis.__zFail)return new Response('{}',{status:403});

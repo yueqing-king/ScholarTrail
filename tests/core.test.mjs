@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { blankDB, createProject, changeProject, recordClick, editRecord, paperData, findMatch, matchScore, zoteroPaper, safeURL } from '../extension/lib/core.js';
-const paper = { title: 'The social credit system and digital governance', authors: 'R Creemers, S Smith', year: '2024', primary_url: 'https://example.org/paper/1', external_ids: ['scholar:cid:paper1'] };
+const paper = { title: 'Literature review methods and research design', authors: 'R Taylor, S Smith', year: '2024', primary_url: 'https://example.org/paper/1', external_ids: ['scholar:cid:paper1'] };
 test('AC01 create, rename, switch, archive and restore projects', () => {
-  const db = blankDB(), a = createProject(db,'Social Credit'), b = createProject(db,'AI');
+  const db = blankDB(), a = createProject(db,'Literature review'), b = createProject(db,'AI');
   changeProject(db,'switch',a.id); assert.equal(db.active_project_id,a.id);
   changeProject(db,'rename',a.id,'Governance'); assert.equal(a.name,'Governance');
   changeProject(db,'archive',a.id); assert.equal(db.active_project_id,b.id);
@@ -46,14 +46,14 @@ test('identity: conflicting DOI cannot inherit a decision even with the same Sch
 });
 test('identity: title alone / shared URL / different year or author are not enough', () => {
   const p=paperData({...paper,external_ids:[]});
-  for(const overrides of [{authors:''},{year:''},{year:'2023'},{authors:'A Creemers'}]) assert.equal(matchScore(p,paperData({...paper,external_ids:[],...overrides})),0);
+  for(const overrides of [{authors:''},{year:''},{year:'2023'},{authors:'A Taylor'}]) assert.equal(matchScore(p,paperData({...paper,external_ids:[],...overrides})),0);
 });
 test('identity: DOI wins over title variations; ambiguous weak matches return nothing', () => {
   const a=paperData({...paper,doi:'https://doi.org/10.1000/ABC'}),b=paperData({...paper,title:'A completely different title',doi:'10.1000/abc'});assert.equal(matchScore(a,b),100);
   const p=paperData(paper);assert.equal(findMatch([{...p,id:'1'},{...p,id:'2'}],p),null);
 });
 test('Zotero: recognize full first names against Scholar initials, ignore attachments', () => {
-  const z=zoteroPaper({key:'ABCD2345',data:{itemType:'journalArticle',title:paper.title,date:'2024-01-01',creators:[{creatorType:'author',firstName:'Rogier',lastName:'Creemers'}]}});
+  const z=zoteroPaper({key:'ABCD2345',data:{itemType:'journalArticle',title:paper.title,date:'2024-01-01',creators:[{creatorType:'author',firstName:'Robin',lastName:'Taylor'}]}});
   assert.equal(matchScore(paperData(paper),z),70);assert.equal(z.key,'ABCD2345');assert.equal(zoteroPaper({data:{itemType:'attachment',title:paper.title}}),null);
 });
 test('input safety and invalid/archived writes', () => {
